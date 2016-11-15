@@ -1,24 +1,40 @@
+import Html exposing (Html, Attribute, div, textarea)
+import Html.Attributes exposing (..)
+import Html.Events exposing (onInput)
 import Markdown
 
 main =
-    Markdown.toHtml [] markdown
+  Html.beginnerProgram { model = model, view = view, update = update }
 
-markdown = """
 
-# This is Markdown
+-- MODEL
 
-[Markdown](http://daringfireball.net/projects/markdown/) lets you
-write content in a really natural way.
+type alias Model =
+  { content : String
+  }
 
-  * You can have lists, like this one
-  * Make things **bold** or *italic*
-  * Embed snippets of `code`
-  * Create [links](/)
-  * ...
+model : Model
+model =
+  { content = "" }
 
-The [elm-markdown][] package parses all this content, allowing you
-to easily generate blocks of `Element` or `Html`.
 
-[elm-markdown]: http://package.elm-lang.org/packages/evancz/elm-markdown/latest
+-- UPDATE
 
-"""
+type Msg
+  = Change String
+
+update : Msg -> Model -> Model
+update msg model =
+  case msg of
+    Change newContent ->
+      { model | content = newContent }
+
+
+-- VIEW
+
+view : Model -> Html Msg
+view model =
+  div []
+    [ textarea [ placeholder "Enter your markdown!", onInput Change ] []
+    , div [] [ Markdown.toHtml [] model.content ]
+    ]
